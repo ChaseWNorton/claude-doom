@@ -10,7 +10,7 @@ The clip is rendered from real terminal output during gameplay. The engine runs 
 
 ## Play the alpha
 
-[Download v0.1.0-alpha.1 for Mac Apple Silicon](https://github.com/ChaseWNorton/claude-doom/releases/download/v0.1.0-alpha.1/claude-doom-v0.1.0-alpha.1-darwin-arm64.zip), extract it, then run this from the extracted `claude-doom` folder:
+[Download v0.1.0-alpha.2 for Mac Apple Silicon](https://github.com/ChaseWNorton/claude-doom/releases/download/v0.1.0-alpha.2/claude-doom-v0.1.0-alpha.2-darwin-arm64.zip), extract it, then run this from the extracted `claude-doom` folder:
 
 ```sh
 bash scripts/play.sh
@@ -20,10 +20,10 @@ Enter **`/doom`**, then **click the keyboard strip below the game**. Escape give
 
 The ZIP includes the compiled engine, full corresponding source, Freedoom assets, and licenses. **No compiler is needed.** The launcher checks the platform and binary checksum, uses Claude Code **2.1.278** if installed, or installs that exact version into this folder. It enables Mods and fullscreen terminal rendering for that session. Claude Code is downloaded separately from Anthropic and requires your own login.
 
-To verify the download in a terminal, download the neighboring `.zip.sha256` asset from the [release page](https://github.com/ChaseWNorton/claude-doom/releases/tag/v0.1.0-alpha.1) and run:
+To verify the download in a terminal, download the neighboring `.zip.sha256` asset from the [release page](https://github.com/ChaseWNorton/claude-doom/releases/tag/v0.1.0-alpha.2) and run:
 
 ```sh
-shasum -a 256 -c claude-doom-v0.1.0-alpha.1-darwin-arm64.zip.sha256
+shasum -a 256 -c claude-doom-v0.1.0-alpha.2-darwin-arm64.zip.sha256
 ```
 
 ## Install through Claude's marketplace

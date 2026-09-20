@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
-import { accessSync, constants, existsSync, readFileSync } from 'node:fs';
+import { accessSync, constants, existsSync, readFileSync, realpathSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { release } from 'node:os';
 import path from 'node:path';
@@ -27,7 +27,7 @@ export function enginePath({ root = ROOT, platform = process.platform, arch = pr
   return binary;
 }
 
-if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+if (process.argv[1] && realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)) {
   try { console.log(`Ready: ${process.platform}-${process.arch}, Node ${process.versions.node}\nEngine: ${enginePath()}\nTested Claude Code: ${CLAUDE_VERSION}`); }
   catch (error) { console.error(error.message); process.exitCode = 1; }
 }

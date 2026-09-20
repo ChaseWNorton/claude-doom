@@ -2,7 +2,7 @@
 import http from 'node:http';
 import { spawn } from 'node:child_process';
 import { randomBytes } from 'node:crypto';
-import { readFileSync, mkdirSync, mkdtempSync, rmSync, writeFileSync, openSync, closeSync } from 'node:fs';
+import { readFileSync, realpathSync, mkdirSync, mkdtempSync, rmSync, writeFileSync, openSync, closeSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
@@ -205,4 +205,4 @@ async function main() {
   if (directory) writeFileSync(path.join(directory, 'ready.json'), JSON.stringify({ url: bridge.url, token: bridge.token }), { mode: 0o600 });
   else console.log(`Doom preview: ${bridge.url}/#${bridge.token}`);
 }
-if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main().catch(error => { console.error(error.message); process.exitCode = 1; });
+if (process.argv[1] && realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)) main().catch(error => { console.error(error.message); process.exitCode = 1; });

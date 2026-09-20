@@ -43,7 +43,8 @@ demo_rect = None
 old_ready = set(glob.glob(str(Path(tempfile.gettempdir()) / "claude-doom-*/ready.json")))
 pid, fd = pty.fork()
 if pid == 0:
-    os.chdir(PLUGIN_ROOT)
+    # Exercise the cached plugin from a project, rather than opening its cache as a workspace.
+    os.chdir(ROOT)
     os.environ.update(TERM="xterm-256color", COLORTERM="truecolor", CLAUDE_CODE_ENABLE_FUNCTION_HOOKS="1", CLAUDE_CODE_NO_FLICKER="1")
     os.execv(str(CLAUDE_BIN), ["claude", "--plugin-dir", str(PLUGIN_ROOT), "--setting-sources", "project,local"])
 fcntl.ioctl(fd, termios.TIOCSWINSZ, struct.pack("HHHH", 55, 180, 1620, 990))
@@ -119,6 +120,11 @@ def health():
 
 try:
     pump(6)
+    startup = "\n".join(screen.display)
+    if "Yes, I trust this folder" in startup and str(ROOT) in startup:
+        # This test operates on its own reviewed source tree, never an arbitrary workspace.
+        send("\x1b[B\r")
+        pump(6)
     send("/doom")
     pump(0.4)
     send("\r")
@@ -187,10 +193,13 @@ finally:
             urllib.request.urlopen(request,timeout=1).close()
         except OSError:
             pass
-    send("\x03")
-    pump(0.2)
-    send("\x03")
-    pump(0.5)
+    try:
+        send("\x03")
+        pump(0.2)
+        send("\x03")
+        pump(0.5)
+    except OSError:
+        pass
     try:
         os.kill(pid,signal.SIGTERM)
     except ProcessLookupError:

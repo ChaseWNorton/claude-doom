@@ -11,7 +11,7 @@
       "description": "The original Doom engine with Freedoom, inside Claude Code. Mac Apple Silicon alpha.",
       "source": {
         "source": "archive",
-        "url": "https://github.com/ChaseWNorton/claude-doom/releases/download/v0.1.0-alpha.1/claude-doom-v0.1.0-alpha.1-darwin-arm64.zip"
+        "url": "https://github.com/ChaseWNorton/claude-doom/releases/download/v0.1.0-alpha.2/claude-doom-v0.1.0-alpha.2-darwin-arm64.zip"
       }
     }
   ]
