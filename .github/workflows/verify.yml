@@ -1,0 +1,36 @@
+name: Verify Mac alpha
+on:
+  push:
+    branches: [main, 'chase/**']
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: macos-15
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm run setup:dev
+      - run: npm run build
+      - run: npm test
+      - run: npm run typecheck
+      - name: Validate and test the Claude mod
+        env:
+          CLAUDE_CODE_ENABLE_FUNCTION_HOOKS: '1'
+        run: |
+          .runtime/node_modules/.bin/claude plugin validate .
+          .runtime/node_modules/.bin/claude plugin validate .claude-plugin/plugin.json
+          .runtime/node_modules/.bin/claude plugin test .
+      - run: npm run package
+      - run: npm run test:package
+      - uses: actions/upload-artifact@v4
+        with:
+          name: claude-doom-darwin-arm64
+          path: dist/*
+          if-no-files-found: error

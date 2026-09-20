@@ -1,0 +1,13 @@
+{
+  "doomgeneric": {
+    "commit": "dcb7a8dbc7a16ce3dda29382ac9aae9d77d21284",
+    "source": "https://github.com/ozkl/doomgeneric",
+    "sha256": "5b2bbcfe05141028a1227ca3ed805a3398bca86cda6f8edf161e280f7065b7f2"
+  },
+  "freedoom": {
+    "release": "v0.13.0",
+    "url": "https://github.com/freedoom/freedoom/releases/tag/v0.13.0",
+    "download": "https://github.com/freedoom/freedoom/releases/download/v0.13.0/freedoom-0.13.0.zip",
+    "sha256": "3f9b264f3e3ce503b4fb7f6bdcb1f419d93c7b546f4df3e874dd878db9688f59"
+  }
+}

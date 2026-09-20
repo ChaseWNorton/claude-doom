@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Doom · Claude Mod</title>
+<style>
+  :root { color-scheme: dark; background: #11100f; color: #e8dccb; font: 15px/1.5 system-ui, sans-serif; }
+  body { max-width: 980px; margin: 0 auto; padding: 24px; }
+  header, footer { display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+  h1 { margin: 0; font-size: 24px; } p { margin: 4px 0; color: #c9baa7; }
+  #screen { width: min(100%, 840px, max(240px, calc((100dvh - 260px) * 4 / 3))); aspect-ratio: 4/3; background: black; display: block; margin: 20px auto; image-rendering: pixelated; cursor: crosshair; outline-offset: 4px; }
+  #screen:focus-visible { outline: 2px solid #efab62; }
+  button { color: inherit; background: #302820; border: 1px solid #806043; border-radius: 4px; padding: 9px 16px; font: inherit; cursor: pointer; }
+  button:hover { background: #493928; } button:focus-visible { outline: 2px solid #efab62; }
+  #status { color: #efab62; } .controls { margin-top: 16px; }
+</style>
+<header><div><h1>DOOM / FREEDOOM</h1><p>Original engine · Claude mod diagnostic view · silent</p></div><span id="status">Starting…</span></header>
+<canvas id="screen" width="320" height="200" tabindex="0" role="img" aria-label="Live Doom game. Click to focus keyboard controls.">Live game rendering requires canvas support.</canvas>
+<footer><span>Click the game to play. Esc releases the keyboard.</span><div><button id="pause">Pause</button> <button id="restart">Restart game</button> <button id="close">Close game</button></div></footer>
+<div class="controls"><p><b>W/S</b> move · <b>A/D</b> turn · <b>Q/E</b> strafe · <b>Space</b> fire · <b>F</b> use doors</p><p><b>1–7</b> weapon · <b>M</b> menu · <b>Enter</b> select · <b>Tab</b> map · <b>P</b> pause</p></div>
+<script>
+  const token = location.hash.slice(1), screen = document.querySelector('#screen'), status = document.querySelector('#status');
+  const held = new Set(); let running = true;
+  const context = screen.getContext('2d');
+  const api = (route, body) => fetch(route, { headers: { Authorization: 'Bearer ' + token, ...(body ? {'Content-Type':'application/json'} : {}) }, ...(body ? {method:'POST',body:JSON.stringify(body)} : {}) });
+  async function action(name) { const response = await api('/' + name, {}); const result = await response.json(); if (!response.ok) throw Error(result.error); return result; }
+  async function draw() {
+    while (running) {
+      try {
+        const response = await api('/frame.png');
+        if (!response.ok) throw Error('Game starting or disconnected');
+        const next = await createImageBitmap(await response.blob());
+        context.drawImage(next, 0, 0); next.close();
+        const health = await (await api('/health')).json();
+        status.textContent = health.paused ? 'Paused' : health.alive ? 'Running locally · frame ' + health.sequence : 'Game stopped';
+      } catch (error) { status.textContent = error.message; }
+      await new Promise(resolve => setTimeout(resolve, 50));
+    }
+  }
+  const keyName = key => ({ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',Enter:'enter',Tab:'tab'})[key] || key.toLowerCase();
+  screen.onclick = () => screen.focus();
+  screen.onkeydown = event => {
+    if (event.ctrlKey || event.metaKey || event.altKey) return;
+    if (event.key === 'Escape') { screen.blur(); return; }
+    event.preventDefault();
+    if (event.key.toLowerCase() === 'p') { if (!event.repeat) document.querySelector('#pause').click(); return; }
+    held.add(keyName(event.key));
+    void api('/input', {keys:[{key:keyName(event.key),action:'down'}]});
+  };
+  screen.onkeyup = event => { event.preventDefault(); held.delete(keyName(event.key)); void api('/input', {keys:[{key:keyName(event.key),action:'up'}]}); };
+  screen.onblur = () => { held.clear(); void action('release'); };
+  setInterval(() => { if (held.size) void api('/input',{keys:[...held].map(key=>({key,action:'down'}))}); }, 100);
+  document.querySelector('#pause').onclick = async () => { const value = await action('pause'); document.querySelector('#pause').textContent = value.paused ? 'Resume' : 'Pause'; screen.focus(); };
+  document.querySelector('#restart').onclick = async () => { await action('restart'); document.querySelector('#pause').textContent = 'Pause'; screen.focus(); };
+  document.querySelector('#close').onclick = async () => { running = false; held.clear(); await action('stop'); status.textContent = 'Closed. Run /doom to play again.'; };
+  window.addEventListener('pagehide', () => { held.clear(); void api('/release',{}); });
+  draw();
+</script></html>

@@ -1,0 +1,25 @@
+{
+  "name": "claude-doom-mod",
+  "version": "0.1.0-alpha.1",
+  "private": true,
+  "type": "module",
+  "license": "GPL-2.0-or-later",
+  "engines": {
+    "node": ">=22"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ChaseWNorton/claude-doom.git"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "play": "bash scripts/play.sh",
+    "preview": "node scripts/bridge.mjs preview",
+    "typecheck": ".runtime/node_modules/.bin/tsc --noEmit",
+    "setup:dev": "node scripts/setup-dev.mjs",
+    "check": "node scripts/runtime.mjs",
+    "package": "node scripts/package.mjs",
+    "test:package": "node scripts/test-package.mjs"
+  }
+}

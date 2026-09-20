@@ -1,0 +1,4 @@
+{
+  "description": "Run Doom in a Claude Code pane; game input and rendering never call a model.",
+  "modules": ["./register.ts"]
+}

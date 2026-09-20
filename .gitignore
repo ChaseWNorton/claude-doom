@@ -1,0 +1,10 @@
+.runtime/
+.claude/
+artifacts/
+types/claude-code.d.ts
+build/
+dist/
+node_modules/
+native/darwin-arm64/
+.DS_Store
+*.zip

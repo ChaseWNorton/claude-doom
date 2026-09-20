@@ -1,0 +1,11 @@
+{
+  "name": "doom",
+  "version": "0.1.0-alpha.1",
+  "description": "The original Doom engine, with Freedoom Phase 1, playable inside Claude Code. Run /doom.",
+  "author": {
+    "name": "Chase Norton"
+  },
+  "homepage": "https://github.com/ChaseWNorton/claude-doom",
+  "repository": "https://github.com/ChaseWNorton/claude-doom",
+  "license": "GPL-2.0-or-later"
+}
